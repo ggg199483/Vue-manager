@@ -8,20 +8,20 @@ const userMap = {
     name: 'Super Admin',
     uid: '001'
   },
-  editor: {
-    role: ['editor'],
-    token: 'editor',
-    introduction: '我是编辑',
-    name: 'Normal Editor',
+  teacher: {
+    role: ['teacher'],
+    token: 'teacher',
+    introduction: '我是老师',
+    name: 'Normal Teacher',
     uid: '002'
 
 
   },
-  developer: {
-    role: ['develop'],
-    token: 'develop',
-    introduction: '我是开发',
-    name: '工程师小王',
+  student: {
+    role: ['student'],
+    token: 'student',
+    introduction: '我是学生',
+    name: '学生高天',
     uid: '003'
   }
 }
