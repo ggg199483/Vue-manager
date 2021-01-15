@@ -13,8 +13,19 @@
                 <Icon type="ios-locked-outline" slot="prepend"></Icon>
             </Input>
         </Form-item>
+
+
+        <Form-item label="账号类型">
+            <Radio-group v-model="loginForm.character">
+                <Radio label="male">管理员</Radio>
+                <Radio label="female">学生</Radio>
+                <Radio label="teacher">老师</Radio>
+            </Radio-group>
+        </Form-item>
+
+
         <Form-item>
-            <Button type="primary" @click="handleLogin('loginForm')" long>登录</Button>
+            <Button type="primary" @click="handleLogin('loginForm')" long>登陆</Button>
         </Form-item>
         <div class='tips'>admin账号为:admin@wz.com 密码123456</div>
             <div class='tips'>editor账号:editor@wz.com 密码123456</div>
@@ -45,8 +56,9 @@
         };
         return {
           loginForm: {
-            email: 'admin@wz.com',
-            password: ''
+              email: 'admin@wz.com',
+              password: '',
+              character: ''
           },
           loginRules: {
             email: [
@@ -109,7 +121,7 @@
 
   window.addEventListener( 'resize', onWindowResize, false );
 
-animate();
+    animate();
        },
       methods: {
         handleLogin() {
