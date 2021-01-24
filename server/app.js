@@ -68,6 +68,8 @@ app.post("*",function(req,res,next){
             res.send(response.body);   //成功响应传递  不写就没响应返回了
         }else{
             console.log("error")
+           // console.log(response.statusCode);
+            console.log(response)
             res.writeHead(500,{"Content-Type":"text/html"});//响应异常处理  状态码500设置
             res.write("服务器错误"); //响应错误信息转发
             res.end("");

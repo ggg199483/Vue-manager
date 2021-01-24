@@ -330,10 +330,11 @@ export default {
         },
         mounted(){
                 const token=this.$store.getters.token;
-                
+                const role=this.$store.getters.role;
+
              this.$Notice.success({
                     title: '欢迎使用竞赛系统',
-                    desc:  `你的账户权限是 ${token} 
+                    desc:  `你的账户权限是 ${role}
                             <br>
                             喜欢就去github给个 start 鼓励一下吧`,
                     duration: 5

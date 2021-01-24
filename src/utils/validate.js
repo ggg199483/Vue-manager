@@ -3,9 +3,17 @@
 
 /* 是否是公司邮箱*/
 export function isWscnEmail(str) {
-  const reg = /^[a-z0-9](?:[-_.+]?[a-z0-9]+)*@wz\.com$/i;
-  return reg.test(str.trim());
+  const reg = /^[a-zA-Z0-9_.@-]{4,16}$/;
+  return reg.test(str);
 }
+
+/*
+export function isWscnEmail(str) {
+    const reg = /^[a-z0-9](?:[-_.+]?[a-z0-9]+)*@[a-z0-9]+\.com$/i;
+    return reg.test(str.trim());
+}
+
+ */
 
 /* 合法uri*/
 export function validateURL(textval) {

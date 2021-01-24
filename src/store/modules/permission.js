@@ -1,4 +1,4 @@
-import { asyncRouterMap, constantRouterMap } from 'src/router';
+import { asyncRouterMap, constantRouterMap,studentRouterMap } from 'src/router';
 
 /**
  * 通过meta.role判断是否与当前用户权限匹配
@@ -85,13 +85,18 @@ const permission = {
   },
   actions: {
     GenerateRoutes({ commit }, data) {
+        console.log('GenerateRoutes')
       return new Promise(resolve => {
         const { roles } = data
         let accessedRouters
         if (roles.indexOf('admin') >= 0) {
+            console.log("有权限！")
           accessedRouters = asyncRouterMap
-        } else {
-          accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
+        } else if(roles.indexOf('student' >=0)){
+            accessedRouters = studentRouterMap;
+        }else {
+
+            accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
         }
 
 

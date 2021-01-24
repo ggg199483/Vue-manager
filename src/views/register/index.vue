@@ -9,37 +9,40 @@
             </Input>
         </Form-item>
         <Form-item prop="password">
-            <Input type="password" v-model="loginForm.password" placeholder="Password" @keyup.enter.native="handleLogin">
+            <Input type="password" v-model="loginForm.password" placeholder="Password" @keyup.enter.native="handleRegister">
                 <Icon type="ios-locked-outline" slot="prepend"></Icon>
+            </Input>
+        </Form-item>
+        <Form-item prop="password2">
+            <Input type="password" v-model="loginForm.password2" placeholder="Password2" @keyup.enter.native="handleRegister">
+            <Icon type="ios-locked-outline" slot="prepend"></Icon>
             </Input>
         </Form-item>
 
 
+        <div class='tips'>
 
-        <!--
-        <Form-item label="账号类型">
-            <Radio-group v-model="loginForm.character">
-                <Radio label="male">管理员</Radio>
-                <Radio label="female">学生</Radio>
-                <Radio label="teacher">老师</Radio>
-            </Radio-group>
-        </Form-item>
-        -->
+            <Form-item label="">
+                注册账号类型   &nbsp&nbsp&nbsp
+                <Radio-group v-model="loginForm.character">
+                    <!--                <Radio label="admin">管理员</Radio>-->
+                    <Radio label="student" >学生</Radio>
+                    <Radio label="teacher">老师</Radio>
+                </Radio-group>
+            </Form-item>
 
-        <Form-item>
-            <Button type="primary" @click="handleLogin()" long>登陆</Button>
-        </Form-item>
+        </div>
 
 
 
         <Form-item>
-            <Button  @click="toRegister()" long>注册</Button>
+            <Button type="primary" @click="handleRegister()" long>注册</Button>
         </Form-item>
 
+        <Form-item>
+            <Button  @click="back()" long>返回</Button>
+        </Form-item>
 
-
-        <div class='tips'>admin账号为:admin@wz.com 密码123456</div>
-            <div class='tips'>editor账号:editor@wz.com 密码123456</div>
            </Form>
 
     </div>
@@ -47,37 +50,54 @@
 
 <script>
     import { isWscnEmail } from 'utils/validate';
+    import fetch from 'utils/fetch';
 
     export default {
       name: 'login',
       data() {
-        const validateEmail = (rule, value, callback) => {
-          if (!isWscnEmail(value)) {
-            callback(new Error('请输入正确的合法邮箱'));
-          } else {
-            callback();
-          }
-        };
-        const validatePass = (rule, value, callback) => {
-          if (value.length < 6) {
-            callback(new Error('密码不能小于6位'));
-          } else {
-            callback();
-          }
-        };
+          const validateEmail = (rule, value, callback) => {
+              if (!isWscnEmail(value)) {
+                  callback(new Error('请输入正确的合法账号'));
+              } else {
+                  callback();
+              }
+          };
+          const validatePass = (rule, value, callback) => {
+              if (value.length < 6) {
+                  callback(new Error('密码不能小于6位'));
+              } else {
+                  callback();
+              }
+          };
+          const validatePass2 = (rule, value, callback) => {
+              if (value.length < 6) {
+                  callback(new Error('确认密码不能小于6位'));
+              } else {
+                  if(value != this.loginForm.password){
+                      callback(new Error('两次输入的密码不一致'));
+                  }else{
+                      callback();
+                  }
+
+              }
+          };
         return {
           loginForm: {
-              email: 'gaodian001',
-              password: '123456',
+              email: '',
+              password: '',
+              password2: '',
               character: 'student'
           },
           loginRules: {
-            email: [
-                { required: true, trigger: 'blur', validator: validateEmail }
-            ],
-            password: [
-                { required: true, trigger: 'blur', validator: validatePass }
-            ]
+              email: [
+                  {required: true, trigger: 'blur', validator: validateEmail}
+              ],
+              password: [
+                  {required: true, trigger: 'blur', validator: validatePass}
+              ],
+              password2: [
+                  {required: true, trigger: 'blur', validator: validatePass2}
+              ]
           },
           loading: false,
           showDialog: false
@@ -135,27 +155,59 @@
     animate();
        },
       methods: {
-        handleLogin() {
+          handleRegister() {
+
           this.$refs.loginForm.validate(valid => {
+
+
             if (valid) {
-              this.loading = true;
-              this.$store.dispatch('LoginByEmail', this.loginForm).then(() => {
-                this.$Message.success('登录成功');
-                
-                this.loading = false;
-                this.$router.push({ path: '/' });
-              }).catch(err => {
-                this.$Message.error(err);
-                this.loading = false;
-              });
+                console.log(this.loginForm.email)
+                console.log(this.loginForm.password)
+                console.log(this.loginForm.character)
+
+                var email = this.loginForm.email;
+                var password = this.loginForm.password;
+                var role = this.loginForm.character;
+                const data = {
+                    email,
+                    password,
+                    role
+                };
+                fetch({
+                    url: '/user/register',
+                    method: 'post',
+                    data
+                }).then(response =>{
+
+                    console.log(response)
+
+                    if(response.data.code == 200){
+                        this.$Message.success(response.data.message);
+
+                        this.loading = false;
+                        this.$router.push({ path: '/login' });
+                    }else{
+                        this.$Message.error(response.data.message);
+                        this.loading = false;
+                    }
+
+
+                });
+
+
+
             } else {
               console.log('error submit!!');
               return false;
             }
+
+
+
           });
+
         },
-          toRegister(){
-              this.$router.push({ path: '/register' });
+          back(){
+              this.$router.push({ path: '/login' });
           }
       },
     }
