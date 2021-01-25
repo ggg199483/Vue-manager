@@ -67,7 +67,7 @@
         };
         return {
           loginForm: {
-              email: 'gaodian001',
+              email: 'gaotian001',
               password: '123456',
               character: 'student'
           },

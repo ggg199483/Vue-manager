@@ -1,4 +1,7 @@
 <template>
+
+
+
   <div class="animated fadeIn">
 
 
@@ -13,6 +16,20 @@
 
 
     </Col>
+
+    <Col :sm="24" :md="8">
+     <div class="block">
+         <el-pagination
+                 background
+                 layout="prev, pager, next"
+                 :total="1000">
+         </el-pagination>
+     </div>
+
+
+    </Col>
+
+
 
 
      <Col :xs="12" :sm="12" :md="8" :lg="8">
