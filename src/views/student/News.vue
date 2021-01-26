@@ -10,21 +10,28 @@
     <Col :sm="24" :md="8">
 
         <h3>👍我的新闻页面👍</h3>
-     <h5 v-for="item in newsList">
-         <a :href="item.id" target="_blank">{{ item.title }}</a>
-     </h5>
 
+     <div class="pagination">
+         <h5 v-for="(item,index) in newsList">
+             <a :href="item.id" target="_blank">{{index+1}}.{{ item.title }}</a>
+         </h5>
+         <el-pagination
+                 @size-change="handleSizeChange"
+                 layout="prev, pager, next, jumper"
+                 :page-size="pageSize"
+                 @current-change="handleCurrentChange"
+                 :current-page.sync="currentPage"
+                 :page-sizes="[5, 10, 20]"
+                 :pager-count="5"
+                 :total="total">
+         </el-pagination>
+
+     </div>
 
     </Col>
 
     <Col :sm="24" :md="8">
-     <div class="block">
-         <el-pagination
-                 background
-                 layout="prev, pager, next"
-                 :total="1000">
-         </el-pagination>
-     </div>
+
 
 
     </Col>
@@ -65,7 +72,10 @@ export default {
                 value3: 0,
 
                 speed:10000,
-                newsList:["sss","sssssss","aaaaa"],
+                newsList:[],
+                currentPage:1,
+                pageSize:10,
+                total:0
             }
         },
         methods:{
@@ -77,30 +87,37 @@ export default {
                   });
               },
               getNews(){
-                  console.log("getnnnnnnnnnnnnnn")
+                  const data ={
+                      currentPage: this.currentPage,
+                      pageSize: this.pageSize
+                  }
                   fetch({
                       url: '/user/get-news',
-                      method: 'get'
+                      method: 'get',
+                      params:data
                   }).then(response =>{
-                      console.log("dddddddddddddd")
                       console.log(response.data)
-
                       if(response.data.code == 200){
-                          console.log("succccccc")
-                          this.newsList = response.data.data;
-                          // this.$Message.success(response.data.message);
-                          //
-                          // this.loading = false;
-                          // this.$router.push({ path: '/login' });
+                          this.newsList = response.data.data.list;
+                          this.total = response.data.data.total  // 总条目数
+                          this.currentPage = response.data.data.pageNum  // 当前页码
+                          this.total = response.data.data.total;
                       }else{
-                          // this.$Message.error(response.data.message);
-                          // this.loading = false;
+                          this.$Message.error(response.data.message);
                       }
-
-
                   });
-
-              }
+              },
+            handleSizeChange(val) { //每页大小改变时
+                this.pageSize = val;
+                this.getNews()
+            },
+            handleCurrentChange(val) {  //页码改变时
+                  console.log("val:"+val)
+                  console.log(this.currentPage)
+                this.pageNum = val;
+                this.getNews()
+                console.log(`当前页: ${val}`);
+            }
         },
         mounted(){
 
