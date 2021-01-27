@@ -55,15 +55,11 @@
 </template>
 
 <script>
-import DashChartCount from '../charts/DashChartCount';
-import DashChartVisitor from '../charts/DashChartVisitor';
-import DashChartLarge from '../charts/DashChartLarge';
 import VueCalendar from '../components/VueCalendar';
-import TodoList from '@/components/TodoList'
 import fetch from 'utils/fetch';
-
+import Cookies from 'js-cookie';
 export default {
-  components:{DashChartCount,DashChartVisitor,DashChartLarge,VueCalendar,TodoList},
+  components:{VueCalendar},
   name: 'News',
         data () {
             return {
@@ -124,15 +120,22 @@ export default {
             this.getNews();
 
                 const token=this.$store.getters.token;
-                const role=this.$store.getters.role;
-
-             this.$Notice.success({
+            console.log(token);
+            const roles=this.$store.getters.roles;
+            console.log(roles);
+            const show =Cookies.get("IsShow");
+            if(show == 1){
+                this.$Notice.success({
                     title: '欢迎使用竞赛系统',
-                    desc:  `你的账户权限是 ${role}
-                            <br>
-                            喜欢就去github给个 start 鼓励一下吧`,
-                    duration: 5
+                    desc:  `您的账户权限是 ${roles}
+                            <br>`,
+                    duration: 3
                 });
+                //登陆后只显示一次
+                Cookies.set('IsShow', 0);
+            }
+
+
 
         }
 }

@@ -12,6 +12,7 @@ const user = {
     token: Cookies.get('Admin-Token'),
     name: '',
     avatar: '',
+    isShow:1,
     introduction: '',
     roles: [],
     setting: {
@@ -67,12 +68,15 @@ const user = {
       const email = userInfo.email.trim();
       return new Promise((resolve, reject) => {
         loginByEmail(email, userInfo.password).then(response => {
-          const data = response.data;
-          console.log(response.data);
-          Cookies.set('Admin-Token', response.data.token);
-          commit('SET_TOKEN', data.token);
-          commit('SET_EMAIL', email);
-          resolve();
+          const data = response.data.data;
+          if(response.data.code ==200){
+            Cookies.set('Admin-Token', data.token);
+            Cookies.set('IsShow', 1);
+            commit('SET_TOKEN', data.token);
+            commit('SET_EMAIL', email);
+            commit('SET_ROLES', data.role);
+          }
+          resolve(response.data);
         }).catch(error => {
           reject(error);
         });
@@ -135,7 +139,9 @@ const user = {
           commit('SET_TOKEN', '');
           commit('SET_ROLES', []);
           Cookies.remove('Admin-Token');
+          Cookies.remove('IsShow');
           resolve();
+
         }).catch(error => {
           reject(error);
         });

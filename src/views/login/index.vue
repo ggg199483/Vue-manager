@@ -139,13 +139,18 @@
           this.$refs.loginForm.validate(valid => {
             if (valid) {
               this.loading = true;
-              this.$store.dispatch('LoginByEmail', this.loginForm).then(() => {
-                this.$Message.success('登录成功');
-                
+              this.$store.dispatch('LoginByEmail', this.loginForm).then(result => {
+                  if(result.code == 200){
+                      this.$Message.success('登录成功');
+                      this.$router.push({ path: '/' });
+
+                  }else{
+                      this.$Message.error(result.message);
+                  }
                 this.loading = false;
-                this.$router.push({ path: '/' });
               }).catch(err => {
-                this.$Message.error(err);
+                  console.log(222)
+                this.$Message.error("服务器异常");
                 this.loading = false;
               });
             } else {
