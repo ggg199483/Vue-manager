@@ -1,4 +1,4 @@
-import { asyncRouterMap, constantRouterMap,studentRouterMap } from 'src/router';
+import {asyncRouterMap, constantRouterMap, studentRouterMap, teacherRouterMap} from 'src/router';
 
 /**
  * 通过meta.role判断是否与当前用户权限匹配
@@ -90,10 +90,11 @@ const permission = {
         const { roles } = data
         let accessedRouters
         if (roles.indexOf('admin') >= 0) {
-            console.log("有权限！")
           accessedRouters = asyncRouterMap
-        } else if(roles.indexOf('student' >=0)){
+        } else if(roles.indexOf('student') >=0){
             accessedRouters = studentRouterMap;
+        }else if(roles.indexOf('teacher') >=0){
+            accessedRouters = teacherRouterMap;
         }else {
 
             accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
