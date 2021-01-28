@@ -19,6 +19,8 @@ router.beforeEach((to, from, next) => {
     if (to.path === '/login') {
       next({ path: '/' })
     } else {
+      console.log("****");
+      console.log(store.getters.roles);
       if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
         console.log("开始拉取");
         store.dispatch('GetInfo').then(res => { // 拉取user_info

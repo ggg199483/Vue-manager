@@ -140,10 +140,11 @@
             if (valid) {
               this.loading = true;
               this.$store.dispatch('LoginByEmail', this.loginForm).then(result => {
+                  console.log("res *-*-*-*-")
+                  console.log(result);
                   if(result.code == 200){
                       this.$Message.success('登录成功');
                       this.$router.push({ path: '/' });
-
                   }else{
                       this.$Message.error(result.message);
                   }
