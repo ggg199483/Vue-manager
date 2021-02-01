@@ -17,6 +17,10 @@ const Login = _import('login/index');
 const Register = _import('register/index');
 Vue.use(Router);
 
+/**
+ * 共有的map
+ * @type {*[]}
+ */
 export const constantRouterMap = [
     {path: '/login', component: Login, hidden: true},
     {path: '/register', component: Register, hidden: true},
@@ -42,6 +46,9 @@ export default new Router({
     scrollBehavior: () => ({y: 0}),
     routes: constantRouterMap
 });
+
+
+
 
 export const adminRouterMap = [
 
@@ -96,22 +103,10 @@ export const adminRouterMap = [
       {path: '/tabledetail/:id',name: 'TableDetail', hidden:true, component: _import('TableDetail')},
       // {path: '/tinymce',name: 'Tinymce编辑器',icon:"android-document",component: _import('Tinymce')},
       {path: '/markdown',name: 'Markdown',icon:"android-list",component: _import('Markdown')},
-
+    {path: '/News', name: '新闻', icon: "android-list", component: _import('user/News'),hidden : true},
+    {path: '/NewsInfo', name: '新闻详情', icon: "android-list", component: _import('user/NewsInfo'),hidden : true},
     ]
   },
-
-    {
-        path: '/home1',
-        redirect: '/home1/introduction',
-        name: '首页2',
-        component: Full2,
-        hidden: false,
-        children: [
-            {path: '/home1/dashboard', name: 'Dashboard2', icon: 'speedometer', component: _import('Dashboard2')},
-            {path: '/home1/introduction', name: '介绍2', icon: 'thumbsup', component: _import('Introduction')},
-
-        ]
-    },
 
 
     {path: '*', redirect: '/pages/404', hidden: true}
@@ -248,7 +243,8 @@ export const studentRouterMap = [
             {path: '/tabledetail/:id', name: 'TableDetail', hidden: true, component: _import('TableDetail')},
             // {path: '/tinymce',name: 'Tinymce编辑器',icon:"android-document",component: _import('Tinymce')},
             {path: '/markdown', name: 'Markdown', icon: "android-list", component: _import('Markdown')},
-
+            {path: '/News', name: '新闻', icon: "android-list", component: _import('user/News'),hidden : true},
+            {path: '/NewsInfo', name: '新闻详情', icon: "android-list", component: _import('user/NewsInfo'),hidden : true},
         ]
     },
 
@@ -266,27 +262,10 @@ export const teacherRouterMap = [
         component: Full,
         hidden: false,
         children: [
-            {
-                path: '/teacher', name: '新闻', redirect: '/teacher/News', icon: 'pie-graph',
-                component: {
-                    render(c) {
-                        return c('router-view')
-                    }
-                },
-                children: [{
-                    path: 'News',
-                    name: '竞赛新闻',
-                    icon: 'stats-bars',
-                    component: _import('user/News'),
-                    hidden: false,
-                },
-                    {
-                        path: 'NewsInfo',
-                        name: '竞赛新闻详情',
-                        icon: 'arrow-graph-up-right',
-                        component: _import('user/NewsInfo'),
-                        hidden: true
-                    },
+            {path: '/teacher',name: '竞赛信息',redirect: '/teacher/match',icon:'pie-graph',
+                component: {render (c) { return c('router-view') }},
+                children: [ {path: 'match',name: '竞赛列表',icon:'stats-bars',component: _import('admin/Match'), hidden:false, },
+                    //{path: 'MatchPublish',name: '发布竞赛信息',icon:'arrow-graph-up-right',component: _import('admin/MatchPublish'),hidden:false},
                 ]
             },
             {
@@ -383,14 +362,12 @@ export const teacherRouterMap = [
             },
 
 
-            // {path: '/News',name: '老师竞赛新闻',icon:'speedometer',component: _import('teacher/News')},
-            // {path: 'NewsInfo',name: '老师竞赛新闻',icon:'speedometer',component: _import('teacher/NewsInfo'),hidden : true},
-
-
             {path: '/jsontree', name: 'JSON视图', icon: 'merge', component: _import('JsonTree')},
             {path: '/tabledetail/:id', name: 'TableDetail', hidden: true, component: _import('TableDetail')},
             // {path: '/tinymce',name: 'Tinymce编辑器',icon:"android-document",component: _import('Tinymce')},
             {path: '/markdown', name: 'Markdown', icon: "android-list", component: _import('Markdown')},
+            {path: '/News', name: '新闻', icon: "android-list", component: _import('user/News'),hidden : true},
+            {path: '/NewsInfo', name: '新闻详情', icon: "android-list", component: _import('user/NewsInfo'),hidden : true},
 
         ]
     },

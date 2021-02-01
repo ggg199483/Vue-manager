@@ -42,7 +42,8 @@
 
                 <el-table-column label="操作"  align="center">
 
-                    <template scope="scope">
+                    <template slot-scope="scope">
+
                         <el-button type="primary" :disabled="isDisabled" size="small" @click="checkDetail(scope.row.id)">操作</el-button>
                     </template>
                 </el-table-column>

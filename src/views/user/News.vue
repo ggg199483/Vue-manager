@@ -91,7 +91,7 @@
             },
             toNewsInfo(val) {
                 console.log("to nes" + val);
-                this.$router.push({path: '/teacher/NewsInfo', query: {newsId: val}});
+                this.$router.push({path: '/NewsInfo', query: {newsId: val}});
             }
         },
         mounted() {

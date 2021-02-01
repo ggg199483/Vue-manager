@@ -21,9 +21,9 @@
       </li>
         <li class="nav-item header-item">
         
-        <router-link tag="div" to='/home1'  style="height:55px;" class="nav-link">
+        <router-link tag="div" to='/News'  style="height:55px;" class="nav-link">
             <p><Icon type="stats-bars" size='30' color="#2d8cf0"></Icon></p>
-            <p  style="color:white"> 浏览排行 </p>
+            <p  style="color:white"> 新闻 </p>
         </router-link> 
 
 
@@ -54,10 +54,10 @@
         <li class="nav-item header-item">
       
 
-         <router-link tag="div" to='/home1'  style="height:55px;" class="nav-link">
-            <p><Icon type="trophy" size='30' color="#2d8cf0"></Icon></p>
-            <p  style="color:white"> 销量排行 </p>
-        </router-link> 
+         <!--<router-link tag="div" to='/home1'  style="height:55px;" class="nav-link">-->
+            <!--<p><Icon type="trophy" size='30' color="#2d8cf0"></Icon></p>-->
+            <!--<p  style="color:white"> 销量排行 </p>-->
+        <!--</router-link> -->
 
 
       </li>
@@ -70,41 +70,43 @@
 
     <ul class="nav navbar-nav ml-auto">
       
-      <li class="nav-item d-md-down-none">
-        <a class="nav-link" ><Icon type="android-notifications" size="20"></Icon><span class="badge badge-pill badge-danger">5</span></a>
-      </li>
+      <!--<li class="nav-item d-md-down-none">-->
+        <!--<a class="nav-link" ><Icon type="android-notifications" size="20"></Icon><span class="badge badge-pill badge-danger">5</span></a>-->
+      <!--</li>-->
 
 
       <Dropdown class="nav-item">
         <a href="javascript:void(0)">
            <span slot="button">
           <img src="static/img/avatars/6.jpg" class="img-avatar" alt="o">
-          <span class="d-md-down-none">admin</span>
+          <span class="d-md-down-none">{{userName}}</span>
           </span>
         </a>
         <Dropdown-menu slot="list">
-            <Dropdown-item>
-              <p class="dropdown-itemp"><Icon type="alert"></Icon>Updates<span class="badge badge-info">42</span></p>
+            <!--<Dropdown-item>-->
+              <!--<p class="dropdown-itemp"><Icon type="alert"></Icon>Updates<span class="badge badge-info">42</span></p>-->
 
-            
-            </Dropdown-item>
-            <Dropdown-item>
-              <p class="dropdown-itemp"><Icon type="chatbox-working"></Icon>Messages<span class="badge badge-success">42</span></p>
+            <!---->
+            <!--</Dropdown-item>-->
+            <!--<Dropdown-item>-->
+              <!--<p class="dropdown-itemp"><Icon type="chatbox-working"></Icon>Messages<span class="badge badge-success">42</span></p>-->
 
-            </Dropdown-item>
-             <Dropdown-item>
-              <p class="dropdown-itemp">  <Icon type="chatbox-working"></Icon>Messages<span class="badge badge-danger">42</span></p>
+            <!--</Dropdown-item>-->
+             <!--<Dropdown-item>-->
+              <!--<p class="dropdown-itemp">  <Icon type="chatbox-working"></Icon>Messages<span class="badge badge-danger">42</span></p>-->
 
-           </Dropdown-item>
+           <!--</Dropdown-item>-->
+            <!---->
+
               <Dropdown-item divided>
-              <p class="dropdown-itemp"><Icon type="android-contact"></Icon> Profile</p>
+              <p class="dropdown-itemp"><Icon type="android-contact"></Icon> 个人信息</p>
 
               </Dropdown-item>
             <Dropdown-item >
-              <p class="dropdown-itemp"><Icon type="android-settings"></Icon> Settings</p>
+              <p class="dropdown-itemp"><Icon type="android-settings"></Icon> 设置</p>
               </Dropdown-item>
 
-                 <Dropdown-item > <a href="" @click="Logout"  ><p  class="dropdown-itemp"><Icon type="power"></Icon>Logout</p></a></Dropdown-item>
+                 <Dropdown-item > <a href="" @click="Logout"  ><p  class="dropdown-itemp"><Icon type="power"></Icon>退出</p></a></Dropdown-item>
 
         </Dropdown-menu>
     </Dropdown>
@@ -121,6 +123,11 @@
 import navbar from './Navbar'
 
 export default {
+    data() {
+        return {
+            userName: ''
+        }
+    },
   name: 'header',
   components: {
     navbar,
@@ -156,6 +163,10 @@ export default {
       e.preventDefault()
       document.body.classList.toggle('aside-menu-hidden')
     }
+  },
+    mounted(){
+        this.userName = this.$store.getters.name;
+        // this.userName =
   }
 }
 </script>

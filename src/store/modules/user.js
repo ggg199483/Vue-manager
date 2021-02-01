@@ -78,6 +78,7 @@ const user = {
             Cookies.set('IsShow', 1);
             commit('SET_TOKEN', data.token);
             commit('SET_EMAIL', email);
+            commit('SET_NAME', data.name);
             // commit('SET_ROLES', data.role);
             console.log("成功setrole"+data.role)
           }
