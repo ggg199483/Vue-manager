@@ -69,6 +69,9 @@ const user = {
       return new Promise((resolve, reject) => {
         loginByEmail(email, userInfo.password).then(response => {
           const data = response.data.data;
+          console.log("*********");
+          console.log(data);
+
           if(response.data.code ==200){
             console.log("set success")
             Cookies.set('Admin-Token', data.token);

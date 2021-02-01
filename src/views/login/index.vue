@@ -143,7 +143,8 @@
                   console.log("res *-*-*-*-")
                   console.log(result);
                   if(result.code == 200){
-                      this.$Message.success('登录成功');
+                      // this.$Message.success('登录成功');
+                      this.$Message.success(result.message);
                       this.$router.push({ path: '/' });
                   }else{
                       this.$Message.error(result.message);

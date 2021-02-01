@@ -43,7 +43,7 @@ app.get("*",function(req,res,next){
             res.send(response.body);
         }else{
             console.log("error")
-            res.writeHead(500,{"Content-Type":"text/html"});//响应异常处理  状态码500设置
+            res.writeHead(500,{"Content-Type":"text/html;charset=UTF-8"});//响应异常处理  状态码500设置
             res.write("服务器错误"); //响应错误信息转发
             res.end("");
         }
@@ -70,7 +70,7 @@ app.post("*",function(req,res,next){
             console.log("error")
            // console.log(response.statusCode);
             console.log(response)
-            res.writeHead(500,{"Content-Type":"text/html"});//响应异常处理  状态码500设置
+            res.writeHead(500,{"Content-Type":"text/html;charset=UTF-8"});//响应异常处理  状态码500设置
             res.write("服务器错误"); //响应错误信息转发
             res.end("");
         }

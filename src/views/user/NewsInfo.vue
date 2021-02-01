@@ -9,23 +9,9 @@
 
     <Col :sm="24" :md="8">
 
-        <h3>👍我的新闻页面👍</h3>
+        <h3>{{title}}</h3>
 
-     <div class="pagination">
-         <h5 v-for="(item,index) in newsList">
-             <a :href="item.id" target="_blank">{{index+1}}.{{ item.title }}</a>
-         </h5>
-         <el-pagination
-                 @size-change="handleSizeChange"
-                 layout="prev, pager, next, jumper"
-                 :page-size="pageSize"
-                 @current-change="handleCurrentChange"
-                 :current-page.sync="currentPage"
-                 :page-sizes="[5, 10, 20]"
-                 :pager-count="5"
-                 :total="total">
-         </el-pagination>
-
+     <div v-html="content" class="pagination">
      </div>
 
     </Col>
@@ -39,10 +25,6 @@
 
 
 
-     <Col :xs="12" :sm="12" :md="8" :lg="8">
-
-     <vue-calendar></vue-calendar>
-     </Col>
 
 
     </Row>
@@ -55,86 +37,42 @@
 </template>
 
 <script>
-import VueCalendar from '../components/VueCalendar';
 import fetch from 'utils/fetch';
 import Cookies from 'js-cookie';
 export default {
-  components:{VueCalendar},
   name: 'News',
         data () {
             return {
-                value1: 0,
-                value2: 0,
-                value3: 0,
 
-                speed:10000,
-                newsList:[],
-                currentPage:1,
-                pageSize:10,
-                total:0
+                title:"",
+                content:""
             }
         },
         methods:{
-              test_logout(){
-                 this.$store.dispatch('LogOut').then(() => {
-                    this.$router.push({ path: '/login' });
-                  }).catch(err => {
-                    this.$message.error(err);
-                  });
-              },
-              getNews(){
+            queryNewsInfo(val){
                   const data ={
-                      currentPage: this.currentPage,
-                      pageSize: this.pageSize
+                      newsId: val
                   }
                   fetch({
-                      url: '/user/get-news',
+                      url: '/user/get-news-info',
                       method: 'get',
                       params:data
                   }).then(response =>{
                       console.log(response.data)
                       if(response.data.code == 200){
-                          this.newsList = response.data.data.list;
-                          this.total = response.data.data.total  // 总条目数
-                          this.currentPage = response.data.data.pageNum  // 当前页码
-                          this.total = response.data.data.total;
+                          console.log(response.data)
+                          this.title = response.data.data.title;
+                          this.content = response.data.data.content;
+                          // this.content =response.data.
                       }else{
                           this.$Message.error(response.data.message);
                       }
                   });
               },
-            handleSizeChange(val) { //每页大小改变时
-                this.pageSize = val;
-                this.getNews()
-            },
-            handleCurrentChange(val) {  //页码改变时
-                  console.log("val:"+val)
-                  console.log(this.currentPage)
-                this.pageNum = val;
-                this.getNews()
-                console.log(`当前页: ${val}`);
-            }
+
         },
         mounted(){
-
-            this.getNews();
-
-                const token=this.$store.getters.token;
-            console.log(token);
-            const roles=this.$store.getters.roles;
-            console.log(roles);
-            const show =Cookies.get("IsShow");
-            if(show == 1){
-                this.$Notice.success({
-                    title: '欢迎使用竞赛系统',
-                    desc:  `您的账户权限是 ${roles}
-                            <br>`,
-                    duration: 3
-                });
-                //登陆后只显示一次
-                Cookies.set('IsShow', 0);
-            }
-
+            this.queryNewsInfo(this.$route.query.newsId);
 
 
         }
