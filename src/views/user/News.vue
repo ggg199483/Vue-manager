@@ -85,7 +85,7 @@
             handleCurrentChange(val) {  //页码改变时
                 console.log("val:" + val)
                 console.log(this.currentPage)
-                this.pageNum = val;
+                this.currentPage = val;
                 this.getNews()
                 console.log(`当前页: ${val}`);
             },

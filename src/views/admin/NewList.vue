@@ -5,7 +5,7 @@
         <h3>👍新闻页面👍</h3>
         <div>
             <el-table
-                    :data="newList"
+                    :data="newsList"
                     border
             >
 
@@ -31,13 +31,8 @@
             <Col :sm="24" :md="8">
 
 
-            <Table :data="matchList">
 
 
-            </Table>
-
-
-            <el-button type="input" @click="dialogFormVisible = true">添加竞赛信息</el-button>
 
             <el-pagination
                     @size-change="handleSizeChange"
@@ -64,7 +59,7 @@
     import Cookies from 'js-cookie';
 
     export default {
-        name: 'News',
+        name: 'NewsList',
         data() {
             return {
 
@@ -110,13 +105,13 @@
             handleCurrentChange(val) {  //页码改变时
                 console.log("val:" + val)
                 console.log(this.currentPage)
-                this.pageNum = val;
+                this.currentPage = val;
                 this.getNews()
                 console.log(`当前页: ${val}`);
             },
             toNewsInfo(val) {
                 console.log("to nes" + val);
-                this.$router.push({path: '/teacher/NewsInfo', query: {newsId: val}});
+                this.$router.push({path: '/NewsInfo', query: {newsId: val}});
             }
         },
         mounted() {
@@ -127,17 +122,6 @@
             console.log(token);
             const roles = this.$store.getters.roles;
             console.log(roles);
-            const show = Cookies.get("IsShow");
-            if (show == 1) {
-                this.$Notice.success({
-                    title: '欢迎使用竞赛系统',
-                    desc: `您的账户权限是 ${roles}
-                            <br>`,
-                    duration: 3
-                });
-                //登陆后只显示一次
-                Cookies.set('IsShow', 0);
-            }
 
 
         }

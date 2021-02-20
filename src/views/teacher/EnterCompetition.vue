@@ -41,18 +41,18 @@
                 </el-table-column>
                 <el-table-column
                         prop="maxCount"
-                        label="人数">
+                        label="总人数">
                 </el-table-column>
                 <el-table-column
                         prop="stuNum"
                         label="报名人数">
                 </el-table-column>
 
-                <el-table-column label="操作"  align="center">
+                <el-table-column label="报名"  align="center">
 
-                    <template slot-scope="scope">
+                    <template v-if="scope.row.teacherName == null" slot-scope="scope">
 
-                        <el-button type="primary"  size="small" @click="checkDetail(scope.row.id)">操作</el-button>
+                        <el-button type="primary"  size="small" @click="showCheck(scope.row.id,scope.row.title)">报名</el-button>
                     </template>
                 </el-table-column>
 
@@ -75,7 +75,6 @@
             </Table>
 
 
-            <el-button type="input" @click="dialogFormVisible = true">添加竞赛信息</el-button>
 
             <el-pagination
                     @size-change="handleSizeChange"
@@ -94,60 +93,21 @@
         </Row>
 
 
-        <el-dialog title="添加竞赛信息" :visible.sync="dialogFormVisible">
-            <Form :model="publishForm" :label-width="80" :rules="ruleInline"  ref="publishForm" >
+        <el-dialog title="" :visible.sync="checkDetail">
+            <Form :model="publishForm" :label-width="50"   ref="publishForm" >
 
-                <Form-item label="题目" prop="title">
-                    <Input v-model="publishForm.title" placeholder="请输入"></Input>
-                </Form-item>
+                <H3 style="text-align: center" >报名{{publishForm.title}}课程</H3>
+<!--                <Hidden v-model="publishForm.id"> </Hidden>-->
 
-                <Form-item label="类型">
-                    <Radio-group v-model="publishForm.type">
-                        <Radio label="项目">项目</Radio>
-                        <Radio label="竞赛">竞赛</Radio>
-                    </Radio-group>
-                </Form-item>
 
-                <Form-item label="开始日期">
-                    <el-date-picker
-                            v-model="publishForm.startTime"
-                            type="datetime"
-                            placeholder="选择日期时间">
-                    </el-date-picker>
-                </Form-item>
 
-                <Form-item label="截止日期"  >
-                    <el-date-picker
-                            prop="endTime"
-                            v-model="publishForm.endTime"
-                            type="datetime"
-                            placeholder="选择日期时间">
-                    </el-date-picker>
-                </Form-item>
-
-                <Form-item label="学院"  >
-                    <el-select v-model="publishForm.college" placeholder="请选择">
-                        <el-option
-                                v-for="item in options"
-                                :key="item.id"
-                                :label="item.value"
-                                :value="item.id">
-                        </el-option>
-                    </el-select>
-
-                </Form-item>
-
-                <Form-item label="最大人数"  >
-                    <Input style="width: 30%;" v-model="publishForm.maxCount" ></Input>
-                </Form-item>
 
             </Form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button @click="checkDetail = false">取 消</el-button>
                 <el-button type="primary" @click="toPublish('publishForm')">确 定</el-button>
             </div>
         </el-dialog>
-
 
 
         <Row>
@@ -166,36 +126,10 @@
     import Cookies from 'js-cookie';
 
     export default {
-        name: 'Match',
+        name: 'entercompetition',
         data() {
-            var checkTime = (rule, value, callback) => {
-                console.log(value);
-                if (!value) {
-                    console.log(1111)
-                    return callback(new Error('结束时间不能为空'));
-                }
-                if(this.publishForm.startTime <  this.publishForm.endTime){
-                    console.log(222)
-
-                    return callback();
-
-                }else{
-                    console.log(3333)
-
-                    return callback(new Error('结束时间要比开始时间大'));
-                }
-            };
             return {
-                ruleInline: {
-                    title: [
-                        { required: true, message: '请填写标题', trigger: 'blur' }
-                    ]
-                    // ,
-                    // endTime: [
-                    //     { validator: checkTime, trigger: 'change' }
-                    // ]
-                },
-                dialogFormVisible: false,
+                checkDetail:false,
                 formLabelWidth: '120px',
                 value1:'',
                 matchList: [],
@@ -204,45 +138,17 @@
                 total: 0,
                 publishForm: {
                     title: '',
-                    type: '项目',
-                    startTime:'',
-                    endTime: '',
-                    maxCount:10,
-                    college:2
                 },
-                options:[
-                    {
-                        id:1,
-                        value:"计算机工程学院"
-                    },
-                    {
-                        id:2,
-                        value:"外国语学院"
-                    },
-                    {
-                        id:3,
-                        value:"新闻与传播学院"
-                    },
-                    {
-                        id:4,
-                        value:"经济与管理学院"
-                    },
-
-                    ]
             }
         },
         methods: {
-            checkDetail(val){
-                alert(Cookies.get("Admin-Token"))
-
-            },
             getMatch() {
                 const data = {
                     currentPage: this.currentPage,
                     pageSize: this.pageSize
                 }
                 fetch({
-                    url: '/admin/get-match',
+                    url: '/teacher/get-match',
                     method: 'get',
                     params: data
                 }).then(response => {
@@ -268,41 +174,32 @@
                 this.getMatch()
                 console.log(`当前页: ${val}`);
             },
+
+            showCheck(id,title){
+                console.log(id)
+                this.checkDetail =true;
+                this.publishForm.id = id;
+                this.publishForm.title = title;
+            },
             toPublish(publishForm){
-                this.$refs[publishForm].validate((valid) => {
-                    if (valid) {
-                        console.log("pppppp")
-                        this.publishMatch();
-                    } else {
-                       alert("请填写完表单再提交!");
-                        return false;
-                    }
-                });
-
-
-
+                this.publishMatch();
             },
             publishMatch(){
-                console.log("-------")
-                //验证信息
-                var title = this.publishForm.title;
-                var startTime = this.publishForm.startTime;
-                var endTime = this.publishForm.endTime;
-                console.log()
-                var type = this.publishForm.type;
-                var maxCount=this.publishForm.maxCount;
-                var college=this.publishForm.college;
+                this.checkDetail = false;
 
+                console.log("-------")
+
+                const token=this.$store.getters.token;
+                const id = this.publishForm.id;
+
+                console.log(token)
+                console.log("-------"+id)
                 const data = {
-                    title,
-                    startTime,
-                    endTime,
-                    type,
-                    maxCount,
-                    college
+                    token,
+                    id,
                 };
                 fetch({
-                    url: '/admin/publish-match',
+                    url: '/teacher/enter-comp',
                     method: 'post',
                     data
 
@@ -313,17 +210,12 @@
                         this.getMatch();
                         this.dialogFormVisible = false;
                         this.$Message.success(response.data.message);
-                        this.publishForm.startTime='';
-                        this.publishForm.endTime='';
-                        this.publishForm.title='';
+
                     } else {
                         alert(response.data.message);
                     }
                 });
             }
-            // compare(val){
-            //
-            // }
 
         },
         mounted() {
@@ -334,7 +226,6 @@
             console.log(token);
             const roles = this.$store.getters.roles;
             console.log(roles);
-
 
 
         }
