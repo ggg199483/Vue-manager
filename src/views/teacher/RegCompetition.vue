@@ -164,13 +164,6 @@
                 this.$router.push({path: '/MatchInfo', query: {matchId: val}});
 
             }
-            // showCheck(id,title){
-            //     console.log(id)
-            //     this.checkDetail =true;
-            //     this.publishForm.id = id;
-            //     this.publishForm.title = title;
-            // },
-
 
         },
         mounted() {

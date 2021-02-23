@@ -283,7 +283,7 @@ export const teacherRouterMap = [
             {path: '/teacher',name: '竞赛信息管理',redirect: '/teacher/entercompetition',icon:'pie-graph',
                 component: {render (c) { return c('router-view') }},
                 children: [ {path: 'entercompetition',name: '竞赛列表',icon:'stats-bars',component: _import('teacher/EnterCompetition'), hidden:false, },
-                    {path: 'regcompetition',name: '已报名竞赛列表',icon:'stats-bars',component: _import('teacher/RegCompetition'), hidden:false, },
+                    {path: 'regcompetition',name: '已报名竞赛列表',icon:'stats-bars',component: _import('teacher/RegCompetition'), hidden:false,},
                     {path: '/MatchInfo', name: '竞赛详情', icon: "android-list", component: _import('teacher/MatchInfo'),hidden : true},
 
                 ]

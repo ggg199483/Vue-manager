@@ -29,7 +29,7 @@
                 </el-table-column>
                 <el-table-column
                         prop="teacherName"
-                        label="老师">
+                        label="老师" >
                 </el-table-column>
                 <el-table-column
                         prop="college"
@@ -134,7 +134,6 @@
                                 :value="item.id">
                         </el-option>
                     </el-select>
-
                 </Form-item>
 
                 <Form-item label="最大人数"  >
@@ -251,7 +250,6 @@
                         this.matchList = response.data.data.list;
                         this.total = response.data.data.total  // 总条目数
                         this.currentPage = response.data.data.pageNum  // 当前页码
-                        this.total = response.data.data.total;
                     } else {
                         this.$Message.error(response.data.message);
                     }

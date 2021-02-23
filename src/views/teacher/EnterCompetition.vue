@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <h3>👍比赛信息页面👍</h3>
+        <h3>👍enter比赛信息页面👍</h3>
         <div>
             <el-table
                     :data="matchList"
@@ -96,16 +96,15 @@
         <el-dialog title="" :visible.sync="checkDetail">
             <Form :model="publishForm" :label-width="50"   ref="publishForm" >
 
-                <H3 style="text-align: center" >报名{{publishForm.title}}课程</H3>
-<!--                <Hidden v-model="publishForm.id"> </Hidden>-->
-
-
+                <H3 style="text-align: center" >确定申请报名 {{publishForm.title}}</H3>
 
 
             </Form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="checkDetail = false">取 消</el-button>
                 <el-button type="primary" @click="toPublish('publishForm')">确 定</el-button>
+
+                <el-button @click="checkDetail = false">取 消</el-button>
+
             </div>
         </el-dialog>
 
@@ -157,7 +156,6 @@
                         this.matchList = response.data.data.list;
                         this.total = response.data.data.total  // 总条目数
                         this.currentPage = response.data.data.pageNum  // 当前页码
-                        this.total = response.data.data.total;
                     } else {
                         this.$Message.error(response.data.message);
                     }
@@ -208,7 +206,6 @@
                     if (response.data.code == 200) {
                         // alert(response.data.message);
                         this.getMatch();
-                        this.dialogFormVisible = false;
                         this.$Message.success(response.data.message);
 
                     } else {
