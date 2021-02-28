@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <h3>👍已报名比赛信息页面👍</h3>
+        <h3>👍比赛信息页面👍</h3>
         <div>
             <el-table
                     :data="matchList"
@@ -48,11 +48,11 @@
                         label="报名人数">
                 </el-table-column>
 
-                <el-table-column label="操作"  align="center">
+                <el-table-column label="申请"  align="center">
 
-                    <template slot-scope="scope">
-                        <a @click="toMatchInfo(scope.row.id)" target="_blank">查看详情</a>
+                    <template  slot-scope="scope" v-if="scope.row.college == userCollege">
 
+                        <el-button type="primary"  size="small" @click="showCheck(scope.row.id,scope.row.title)">报名</el-button>
                     </template>
                 </el-table-column>
 
@@ -93,6 +93,28 @@
         </Row>
 
 
+        <el-dialog title="学生申请信息管理" :visible.sync="checkDetail">
+            <Form :model="publishForm" :label-width="50" ref="publishForm">
+
+                <Form-item label="姓名" prop="stuRealName">
+                    <Input v-model="publishForm.stuRealName" placeholder="请输入姓名"></Input>
+                </Form-item>
+                <!--                <el-input-->
+                <!--                        type="textarea"-->
+                <!--                        :autosize="{ minRows: 2, maxRows: 4}"-->
+                <!--                        placeholder="请输入留言"-->
+                <!--                        v-model="publishForm.leaveWord">-->
+                <!--                </el-input>-->
+
+            </Form>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="toPublish('publishForm')">确 定</el-button>
+
+                <el-button @click="checkDetail = false">取 消</el-button>
+
+            </div>
+        </el-dialog>
+
 
         <Row>
             <Col span="15" >
@@ -110,7 +132,7 @@
     import Cookies from 'js-cookie';
 
     export default {
-        name: 'regcompetition',
+        name: 'applycompetition',
         data() {
             return {
                 checkDetail:false,
@@ -120,8 +142,9 @@
                 currentPage: 1,
                 pageSize: 10,
                 total: 0,
-                // token:'',
+                userCollege:'',
                 publishForm: {
+                    stuRealName: '',
                 },
             }
         },
@@ -129,11 +152,10 @@
             getMatch() {
                 const data = {
                     currentPage: this.currentPage,
-                    pageSize: this.pageSize,
-                    token:this.$store.getters.token,
+                    pageSize: this.pageSize
                 }
                 fetch({
-                    url: '/teacher/get-mymatch',
+                    url: '/teacher/get-match',
                     method: 'get',
                     params: data
                 }).then(response => {
@@ -158,20 +180,78 @@
                 this.getMatch()
                 console.log(`当前页: ${val}`);
             },
-            toMatchInfo(val) {
-                this.$router.push({path: '/MatchInfo', query: {matchId: val}});
 
+            getUserInfo(val){
+                const data = {
+                    token:val,
+                }
+                fetch({
+                    url: '/student/get-userInfo',
+                    method: 'get',
+                    params: data
+                }).then(response => {
+                    console.log(response.data)
+                    if (response.data.code == 200) {
+                        this.userCollege = response.data.data  // 获取用户的college信息
+                        console.log(this.userCollege)
+                    } else {
+                        this.$Message.error(response.data.message);
+                    }
+                });
+            },
+
+            showCheck(id,title){
+                console.log(id)
+                this.checkDetail =true;
+                this.publishForm.id = id;
+                this.publishForm.title = title;
+            },
+            toPublish(publishForm){
+                this.publishMatch();
+            },
+            publishMatch(){
+                this.checkDetail = false;
+
+                console.log("-------")
+
+                const token=this.$store.getters.token;
+                const id = this.publishForm.id;
+
+                console.log(token)
+                console.log("-------"+id)
+                const data = {
+                    token,
+                    id,
+                };
+                fetch({
+                    url: '/student/apply_com',
+                    method: 'post',
+                    data
+
+                }).then(response => {
+                    console.log(response.data)
+                    if (response.data.code == 200) {
+                        // alert(response.data.message);
+                        this.getMatch();
+                        this.$Message.success(response.data.message);
+
+                    } else {
+                        alert(response.data.message);
+                    }
+                });
             }
 
         },
         mounted() {
-
-            this.getMatch();
-
             const token = this.$store.getters.token;
             console.log(token);
             const roles = this.$store.getters.roles;
             console.log(roles);
+
+            this.getUserInfo(token)
+            this.getMatch();
+
+
 
 
         }

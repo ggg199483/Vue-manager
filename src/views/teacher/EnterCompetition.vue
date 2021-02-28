@@ -28,7 +28,7 @@
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="teacherName"
+                        prop="realName"
                         label="老师">
                 </el-table-column>
                 <el-table-column
@@ -50,7 +50,7 @@
 
                 <el-table-column label="报名"  align="center">
 
-                    <template v-if="scope.row.teacherName == null" slot-scope="scope">
+                    <template v-if="scope.row.realName == null" slot-scope="scope">
 
                         <el-button type="primary"  size="small" @click="showCheck(scope.row.id,scope.row.title)">报名</el-button>
                     </template>
@@ -209,7 +209,8 @@
                         this.$Message.success(response.data.message);
 
                     } else {
-                        alert(response.data.message);
+                        this.$Message.error(response.data.message);
+                        //alert(response.data.message);
                     }
                 });
             }

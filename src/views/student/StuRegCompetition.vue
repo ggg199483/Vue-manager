@@ -1,67 +1,58 @@
 <template>
-    <div>
 
-        <h3>👍已报名比赛信息页面👍</h3>
+    <div class="animated fadeIn">
+
+<!--        <h3>👍{{title}}👍</h3>-->
+<!--        <div style="text-align: left">-->
+<!--            <p style="color: #0d5477">该竞赛项目团队最多{{publishForm.maxCount}}人，现已有{{passNum}}人</p>-->
+<!--        </div>-->
         <div>
             <el-table
                     :data="matchList"
                     border
             >
                 <el-table-column
-                        prop="startDate"
-                        label="开始报名日期"
-                        width="160">
+                        prop="title"
+                        label="标题"
+                        width="200">
                 </el-table-column>
+                <el-table-column
+                    prop="createTime"
+                    label="报名日期"
+                    width="200">
+            </el-table-column>
                 <el-table-column
                         prop="endDate"
                         label="结束报名日期"
-                        width="160">
+                        width="200">
                 </el-table-column>
                 <el-table-column
-                        prop="createDate"
-                        label="发布日期"
-                        width="160">
-                </el-table-column>
-                <el-table-column
-                        prop="title"
-                        label="标题"
-                        width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="realName"
+                        prop="teaRealName"
                         label="老师">
                 </el-table-column>
-                <el-table-column
-                        prop="college"
-                        label="学院">
-                </el-table-column>
-                <el-table-column
-                        prop="type"
-                        label="竞赛类型">
-                </el-table-column>
-                <el-table-column
-                        prop="maxCount"
-                        label="总人数">
-                </el-table-column>
-                <el-table-column
-                        prop="stuNum"
-                        label="报名人数">
-                </el-table-column>
 
-                <el-table-column label="操作"  align="center">
+                <el-table-column
+                        prop="matchStatus"
+                        label="报名状态"
+                        align="center">
 
-                    <template slot-scope="scope">
-                        <a @click="toMatchInfo(scope.row.id)" target="_blank">查看详情</a>
-
+                    <template  slot-scope="scope">
+                        <p v-if="scope.row.matchStatus == '0'" style="color:#E6A23C"> 未审核</p>
+                        <p v-if="scope.row.matchStatus == '1'" style="color:#67C23A"> 审核通过</p>
+                        <p v-if="scope.row.matchStatus == '2'" style="color:#F56C6C"> 审核未通过</p>
                     </template>
                 </el-table-column>
+
+<!--                <el-table-column label="详情"  align="center">-->
+
+<!--                    <template  slot-scope="scope">-->
+<!--                        <el-button type="primary"  size="small" @click="showCheck(scope.row.id,scope.row.matchId,scope.row.matchStatus,scope.row.studentId)">查看详情</el-button>-->
+<!--                    </template>-->
+<!--                </el-table-column>-->
 
             </el-table>
 
         </div>
-
-        <!--<div class="animated fadeIn">-->
-
 
         <Row>
 
@@ -94,12 +85,18 @@
 
 
 
-        <Row>
-            <Col span="15" >
 
-            </Col>
-
-        </Row>
+<!--        <el-dialog title="学生申请信息管理" :visible.sync="checkDetail"  :modal-append-to-body='false' >-->
+<!--            <div style="text-align: right">-->
+<!--                <template v-if="publishForm.matchStatus == '0' || publishForm.matchStatus == '2'">-->
+<!--                    <el-button type="primary" @click="applyDisposeP('publishForm')">加入</el-button>-->
+<!--                </template>-->
+<!--                <template v-if="publishForm.matchStatus == '0' || publishForm.matchStatus == '1'">-->
+<!--                    <el-button type="primary" @click="applyDisposeF('publishForm')">退出</el-button>-->
+<!--                </template>-->
+<!--                <el-button @click="checkDetail = false">取 消</el-button>-->
+<!--            </div>-->
+<!--        </el-dialog>-->
 
 
     </div>
@@ -108,10 +105,9 @@
 <script>
     import fetch from 'utils/fetch';
     import Cookies from 'js-cookie';
-
     export default {
-        name: 'regcompetition',
-        data() {
+        name: 'MatchInfo',
+        data () {
             return {
                 checkDetail:false,
                 formLabelWidth: '120px',
@@ -120,7 +116,6 @@
                 currentPage: 1,
                 pageSize: 10,
                 total: 0,
-                // token:'',
                 publishForm: {
                 },
             }
@@ -133,7 +128,7 @@
                     token:this.$store.getters.token,
                 }
                 fetch({
-                    url: '/teacher/get-mymatch',
+                    url: '/student/get-myapply',
                     method: 'get',
                     params: data
                 }).then(response => {
@@ -158,10 +153,10 @@
                 this.getMatch()
                 console.log(`当前页: ${val}`);
             },
-            toMatchInfo(val) {
-                this.$router.push({path: '/MatchInfo', query: {matchId: val}});
-
-            }
+            // toMatchInfo(val) {
+            //     this.$router.push({path: '/MatchInfo', query: {matchId: val}});
+            //
+            // }
 
         },
         mounted() {

@@ -12,8 +12,13 @@
                   border
           >
               <el-table-column
+                      prop="realName"
+                      label="学生姓名"
+                      width="200">
+              </el-table-column>
+              <el-table-column
                       prop="studentName"
-                      label="报名学生"
+                      label="学生账号"
                       width="200">
               </el-table-column>
               <el-table-column
@@ -27,7 +32,8 @@
               </el-table-column>
               <el-table-column
                       prop="matchStatus"
-                      label="报名状态">
+                      label="报名状态"
+                      align="center">
 
                   <template  slot-scope="scope">
                       <p v-if="scope.row.matchStatus == '0'" style="color:#E6A23C"> 未审核</p>
@@ -154,12 +160,12 @@ export default {
 
             showCheck(id,matchId,matchStatus,studentId){
                 this.checkDetail =true;
-                console.log("--学生申请--")
+                console.log("--处理学生申请--")
                 console.log("id:"+id)
                 console.log("matchId:"+matchId)
                 console.log("matchStatus:"+matchStatus)
                 console.log("studentId:"+studentId)
-                console.log("----------")
+                console.log("-------------")
                 this.publishForm.id = id;
                 this.publishForm.matchId = matchId;
                 this.publishForm.matchStatus = matchStatus;

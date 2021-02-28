@@ -142,6 +142,30 @@ export const studentRouterMap = [
                 ]
             },
             {
+                path: '/student', name: '竞赛信息管理', redirect: '/student/applycompetition', icon: 'pie-graph',
+                component: {
+                    render(c) {
+                        return c('router-view')
+                    }
+                },
+                children: [{
+                    path: 'applycompetition',
+                    name: '竞赛列表',
+                    icon: 'stats-bars',
+                    component: _import('student/ApplyCompetition'),
+                    hidden: false,
+                },
+                    {
+                        path: 'sturegcompetition',
+                        name: '已申请竞赛列表',
+                        icon: 'stats-bars',
+                        component: _import('student/StuRegCompetition'),
+                        hidden: false,
+                    },
+
+                ]
+            },
+            {
                 path: '/components', name: 'component组件', redirect: '/components/buttons', icon: 'bookmark',
                 component: {
                     render(c) {
@@ -280,11 +304,34 @@ export const teacherRouterMap = [
                     },
                 ]
             },
-            {path: '/teacher',name: '竞赛信息管理',redirect: '/teacher/entercompetition',icon:'pie-graph',
-                component: {render (c) { return c('router-view') }},
-                children: [ {path: 'entercompetition',name: '竞赛列表',icon:'stats-bars',component: _import('teacher/EnterCompetition'), hidden:false, },
-                    {path: 'regcompetition',name: '已报名竞赛列表',icon:'stats-bars',component: _import('teacher/RegCompetition'), hidden:false,},
-                    {path: '/MatchInfo', name: '竞赛详情', icon: "android-list", component: _import('teacher/MatchInfo'),hidden : true},
+            {
+                path: '/teacher', name: '竞赛信息管理', redirect: '/teacher/entercompetition', icon: 'pie-graph',
+                component: {
+                    render(c) {
+                        return c('router-view')
+                    }
+                },
+                children: [{
+                    path: 'entercompetition',
+                    name: '竞赛列表',
+                    icon: 'stats-bars',
+                    component: _import('teacher/EnterCompetition'),
+                    hidden: false,
+                },
+                    {
+                        path: 'regcompetition',
+                        name: '已报名竞赛列表',
+                        icon: 'stats-bars',
+                        component: _import('teacher/RegCompetition'),
+                        hidden: false,
+                    },
+                    {
+                        path: '/MatchInfo',
+                        name: '竞赛详情',
+                        icon: "android-list",
+                        component: _import('teacher/MatchInfo'),
+                        hidden: true
+                    },
 
                 ]
             },
@@ -392,16 +439,6 @@ export const teacherRouterMap = [
         ]
     },
 
-    // {
-    //     path: '/NewsInfo',
-    //     name: '新闻页面',
-    //     component: Full,
-    //     hidden:false,
-    //     children: [
-    //         {path: '/NewsInfo',name: '老师竞赛新闻',icon:'speedometer',component: _import('teacher/NewsInfo')},
-    //
-    //     ]
-    // },
 
 
     {path: '*', redirect: '/pages/404', hidden: true}
