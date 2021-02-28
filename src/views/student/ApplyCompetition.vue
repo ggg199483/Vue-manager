@@ -99,6 +99,34 @@
                 <Form-item label="姓名" prop="stuRealName">
                     <Input v-model="publishForm.stuRealName" placeholder="请输入姓名"></Input>
                 </Form-item>
+
+
+              <Upload :action="uploadUrl">
+                <Button type="ghost" icon="ios-cloud-upload-outline">上传报名信息</Button>
+              </Upload>
+
+
+              <div class="btns">
+                <el-link target="_blank" :href="downloadUrl" :underline="false" style="margin-left:15px">
+                  <el-button size="mini" type="warning">软件下载</el-button>
+                </el-link>
+              </div>
+
+              <!--              <el-upload-->
+<!--                  class="upload-demo"-->
+<!--                  :action="uploadUrl"-->
+<!--                  :on-preview="handlePreview"-->
+<!--                  :on-remove="handleRemove"-->
+<!--                  :before-remove="beforeRemove"-->
+<!--                  multiple-->
+<!--                  :limit="3"-->
+<!--                  :on-exceed="handleExceed"-->
+<!--                  :file-list="fileList">-->
+<!--                <el-button size="small" type="primary">点击上传</el-button>-->
+<!--                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
+<!--              </el-upload>-->
+
+
                 <!--                <el-input-->
                 <!--                        type="textarea"-->
                 <!--                        :autosize="{ minRows: 2, maxRows: 4}"-->
@@ -130,6 +158,7 @@
 <script>
     import fetch from 'utils/fetch';
     import Cookies from 'js-cookie';
+    import {BASE_API} from "../../../config/dev.env";
 
     export default {
         name: 'applycompetition',
@@ -146,9 +175,33 @@
                 publishForm: {
                     stuRealName: '',
                 },
+              fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}]
+
+              ,
             }
         },
+    computed:{
+      uploadUrl() {
+        return  BASE_API.replace(/"/g,"")+/upload/;
+      },
+      downloadUrl() {
+        return  BASE_API.replace(/"/g,"")+/download/;
+      },
+    },
         methods: {
+          handleRemove(file, fileList) {
+            console.log(file, fileList);
+          },
+          handlePreview(file) {
+            console.log(file);
+          },
+          handleExceed(files, fileList) {
+            this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+          },
+          beforeRemove(file, fileList) {
+            return this.$confirm(`确定移除 ${ file.name }？`);
+          },
+
             getMatch() {
                 const data = {
                     currentPage: this.currentPage,

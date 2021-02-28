@@ -8,6 +8,11 @@ var logger = require('morgan');
 var request = require('request');
 const bodyParser = require('body-parser');
 
+const fs = require('fs')
+const FormData = require('form-data')
+const axios = require('axios')
+const multipart = require('connect-multiparty')
+const multipartMiddleware = multipart()
 
 var app = express();
 app.use(bodyParser.json());
@@ -15,6 +20,7 @@ app.use(bodyParser.json());
 
 //设置跨域访问
 app.all("*",function(req,res,next){
+
     //设置允许跨域的域名，*代表允许任意域名跨域
     res.header("Access-Control-Allow-Origin","*");
     //允许的header类型
@@ -30,6 +36,7 @@ app.all("*",function(req,res,next){
 
 app.get("*",function(req,res,next){
     var url = config.backUrl+':'+config.backPort+req.url;
+
     console.log('get!!!!!!!!!!!!!!'+url);
     request({
         url: url,
@@ -39,7 +46,38 @@ app.get("*",function(req,res,next){
     }, function(error, response, body) {
         // 请求成功的处理逻辑
         if (!error && response.statusCode == 200) {
-            console.log(body);
+            if (response.headers){
+                console.log( );
+                if(response.headers){
+                    if (response.headers["media"] == "file"){
+                        var fileName = response.body;
+                        // var filePath = path.join(__dirname,fileName);
+                        var stats = fs.statSync(fileName);
+                        var isFile = stats.isFile();
+                        console.log(666)
+
+                        if(isFile){
+                            res.setHeader('Content-Type','application/octet-stream');
+                            res.setHeader('Content-Disposition','attachment; filename=falseName12.txt');
+                            res.setHeader('Content-Length',stats.size);
+                            // res.setHeaders({
+                            //     'Content-Type': 'application/octet-stream',
+                            //     'Content-Disposition': 'attachment; filename=falseName12.txt' ,
+                            //     'Content-Length': stats.size
+                            // });
+                            console.log("开始下载"+fileName);
+                            // fs.createReadStream(fileName).pipe(res);
+                            res.download(fileName);
+                        } else {
+                            res.end(404);
+                        }
+
+
+                    }
+                }
+
+            }
+
             res.send(response.body);
         }else{
             console.log("error")
@@ -50,10 +88,11 @@ app.get("*",function(req,res,next){
     });
 })
 
+/**
 app.post("*",function(req,res,next){
+    console.log("-******")
     var url = config.backUrl+':'+config.backPort+req.url;
     console.log("这里是*匹配到的");
-    console.log(req.body);
     //var url = 'http:127.0.0.1:8090/student/test';
     request({
         url: url,
@@ -76,8 +115,67 @@ app.post("*",function(req,res,next){
         }
     });
 })
+**/
 
 
+app.post('*', multipartMiddleware, (req, res, next) => {
+    var url = config.backUrl+':'+config.backPort+req.url;
+
+    console.log("*-*-*-*-*-*--")
+    console.log(req.body)
+    console.log(req.files)
+    const formData = new FormData()
+    const params = req.body
+    for (const key in params) {
+        if (params.hasOwnProperty(key)) {
+            const value = params[key]
+            formData.append(key, value)
+        }
+    }
+    const files = req.files
+    if (files){
+        if (!Object.keys(files).length) return res.send({ msg: '请选择文件' })
+        for (const key in files) {
+            if (files.hasOwnProperty(key)) {
+                const item = files[key]
+                const { path: filePath, originalFilename } = item
+                const newPath = path.join(path.dirname(filePath), originalFilename) // 得到newPath新地址用于创建读取流
+                console.log('filePath', filePath)
+                console.log('newPath', newPath)
+                fs.rename(filePath, newPath, (err) => {
+                    if (err) return
+                    const file = fs.createReadStream(newPath) //创建读取流
+                    formData.append(key, file)
+                    axios.post(url, formData, { headers: formData.getHeaders() }).then((res1) => {
+                        res.send(res1.data)
+                    })
+                })
+            }
+        }
+    }else{
+        request({
+            url: url,
+            method: 'post',// 请求方式get
+            json: true,   //json格式传输
+            headers: req.headers,
+            body: req.body
+        }, function(error, response, body) {
+            // 请求成功的处理逻辑
+            if (!error && response.statusCode == 200) {
+                console.log(body);
+                res.send(response.body);   //成功响应传递  不写就没响应返回了
+            }else{
+                console.log("error")
+                // console.log(response.statusCode);
+                console.log(response)
+                res.writeHead(500,{"Content-Type":"text/html;charset=UTF-8"});//响应异常处理  状态码500设置
+                res.write("服务器错误"); //响应错误信息转发
+                res.end("");
+            }
+        });
+    }
+
+})
 // view engine setup
 
 
