@@ -35,57 +35,65 @@ app.all("*",function(req,res,next){
 
 
 app.get("*",function(req,res,next){
-    var url = config.backUrl+':'+config.backPort+req.url;
+    const url = config.backUrl+':'+config.backPort+req.url;
+    let downloadUrl = '';
+    if(req.url.indexOf("download") != -1){
+        //下载的逻辑
+        //先请求到下载地址
+        request({
+            url: url,
+            method: 'get',// 请求方式get
+            json: true,   //json格式传输
+            headers: req.headers
+        }, function(error, response, body) {
+            // 请求成功的处理逻辑
+            if (!error && response.statusCode == 200) {
+                console.log(response.body);
+                if (response.body.code == 200){
+                    // console.log("222")
+                    if (response.body.data){
+                        res.download(response.body.data);
 
-    console.log('get!!!!!!!!!!!!!!'+url);
-    request({
-        url: url,
-        method: 'get',// 请求方式get
-        json: true,   //json格式传输
-        headers: req.headers
-    }, function(error, response, body) {
-        // 请求成功的处理逻辑
-        if (!error && response.statusCode == 200) {
-            if (response.headers){
-                console.log( );
-                if(response.headers){
-                    if (response.headers["media"] == "file"){
-                        var fileName = response.body;
-                        // var filePath = path.join(__dirname,fileName);
-                        var stats = fs.statSync(fileName);
-                        var isFile = stats.isFile();
-                        console.log(666)
-
-                        if(isFile){
-                            res.setHeader('Content-Type','application/octet-stream');
-                            res.setHeader('Content-Disposition','attachment; filename=falseName12.txt');
-                            res.setHeader('Content-Length',stats.size);
-                            // res.setHeaders({
-                            //     'Content-Type': 'application/octet-stream',
-                            //     'Content-Disposition': 'attachment; filename=falseName12.txt' ,
-                            //     'Content-Length': stats.size
-                            // });
-                            console.log("开始下载"+fileName);
-                            // fs.createReadStream(fileName).pipe(res);
-                            res.download(fileName);
-                        } else {
-                            res.end(404);
-                        }
-
-
+                    }else{
+                        console.log("error")
+                        res.writeHead(500,{"Content-Type":"text/html;charset=UTF-8"});//响应异常处理  状态码500设置
+                        res.write("服务器错误"); //响应错误信息转发
+                        res.end("");
                     }
+                }else{
+                    console.log("error")
+                    res.writeHead(500,{"Content-Type":"text/html;charset=UTF-8"});//响应异常处理  状态码500设置
+                    res.write(response.body.message); //响应错误信息转发
+                    res.end("");
                 }
-
+            }else{
+                console.log("error")
+                res.writeHead(500,{"Content-Type":"text/html;charset=UTF-8"});//响应异常处理  状态码500设置
+                res.write("服务器错误"); //响应错误信息转发
+                res.end("");
             }
+        });
+    }else{
+        //普通的get逻辑
+        request({
+            url: url,
+            method: 'get',// 请求方式get
+            json: true,   //json格式传输
+            headers: req.headers
+        }, function(error, response, body) {
+            // 请求成功的处理逻辑
+            if (!error && response.statusCode == 200) {
+                res.send(response.body);
+            }else{
+                console.log("error")
+                res.writeHead(500,{"Content-Type":"text/html;charset=UTF-8"});//响应异常处理  状态码500设置
+                res.write("服务器错误"); //响应错误信息转发
+                res.end("");
+            }
+        });
+    }
 
-            res.send(response.body);
-        }else{
-            console.log("error")
-            res.writeHead(500,{"Content-Type":"text/html;charset=UTF-8"});//响应异常处理  状态码500设置
-            res.write("服务器错误"); //响应错误信息转发
-            res.end("");
-        }
-    });
+
 })
 
 /**
