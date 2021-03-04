@@ -165,6 +165,9 @@ export const studentRouterMap = [
 
                 ]
             },
+
+            {path: '/user/info', name: '个人信息', icon: 'android-list', component: _import('user/ChangeInfo'), hidden: false},
+
             {
                 path: '/components', name: 'component组件', redirect: '/components/buttons', icon: 'bookmark',
                 component: {
@@ -335,6 +338,7 @@ export const teacherRouterMap = [
 
                 ]
             },
+            {path: '/changeInformation', name: '个人信息', icon: 'android-list', component: _import('user/ChangeInfo'), hidden: true},
             {
                 path: '/components', name: 'component组件', redirect: '/components/buttons', icon: 'bookmark',
                 component: {
